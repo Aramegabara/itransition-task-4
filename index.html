@@ -267,5 +267,40 @@ tabs.forEach(tab => tab.addEventListener('click', () => {
   });
 }));
 </script>
+
+<div class="block" style="max-width:1180px;margin:0 auto 60px;">
+  <h3>Ask about the data</h3>
+  <div id="log" style="min-height:60px;max-height:280px;overflow-y:auto;margin-bottom:12px;"></div>
+  <div style="display:flex;gap:8px;">
+    <input id="q" placeholder="Ask a question"
+           style="flex:1;padding:9px 12px;border:1px solid #e5e7eb;border-radius:6px;font-size:14px;">
+    <button onclick="send()"
+            style="padding:9px 20px;border:none;border-radius:6px;background:#2563eb;color:#fff;font-size:14px;cursor:pointer;">Ask</button>
+  </div>
+</div>
+<script>
+async function send() {
+  const input = document.getElementById('q');
+  const question = input.value.trim();
+  if (!question) return;
+  const log = document.getElementById('log');
+  log.innerHTML += '<div style="margin-bottom:6px;"><b>You:</b> ' + question + '</div>';
+  input.value = '';
+  log.innerHTML += '<div id="wait" style="color:#6b7280;">thinking...</div>';
+  const response = await fetch('/ask', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({question: question})
+  });
+  const data = await response.json();
+  document.getElementById('wait').remove();
+  log.innerHTML += '<div style="margin-bottom:12px;"><b>Bot:</b> ' + data.answer + '</div>';
+  log.scrollTop = log.scrollHeight;
+}
+document.getElementById('q').addEventListener('keydown', e => {
+  if (e.key === 'Enter') send();
+});
+</script>
+
 </body>
 </html>
