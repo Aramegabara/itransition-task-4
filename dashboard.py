@@ -86,6 +86,7 @@ CHAT_HTML = """
             style="padding:9px 20px;border:none;border-radius:6px;background:#2563eb;color:#fff;font-size:14px;cursor:pointer;">Ask</button>
   </div>
 </div>
+<div id="table" style="max-height:400px;overflow:auto;margin-top:12px;"></div>
 <script>
 async function send() {
   const input = document.getElementById('q');
@@ -101,6 +102,7 @@ async function send() {
     body: JSON.stringify({question: question})
   });
   const data = await response.json();
+  if (data.table) document.getElementById('table').innerHTML = data.table;
   document.getElementById('wait').remove();
   log.innerHTML += '<div style="margin-bottom:12px;"><b>Bot:</b> ' + data.answer + '</div>';
   log.scrollTop = log.scrollHeight;
